@@ -282,20 +282,20 @@ function confrimCheck(){
 
 
 function loanSaveLoanAgain(){
-    if ($('#loaner_name').val() == ''){
-    	alert('Please input Loaner Name');
+	if ($('#loaner_name').val() == ''){
+    	alert('សូមបញ្ចូលឈ្មោះអ្នកដែលខ្ចីប្រាក់!');
     	return;
     }
     if ($('#phone').val() == ''){
-    	alert('Please input Phone Number');
+    	alert('សូមបញ្ចូលលេខទូរស័ព្ទអ្នកដែលខ្ចីប្រាក់!');
     	return;
     }
     if ($('#id_card').val() == ''){
-    	alert('Please input ID Card');
+    	alert('សូមបញ្ចូលអត្ដសញ្ញាណប័ណ្ណអ្នកដែលខ្ចីប្រាក់!');
     	return;
     }
     if ($('#address').val() == ''){
-    	alert('Please input Address');
+    	alert('សូមបញ្ចូលអាស័យដ្ឋានអ្នកដែលខ្ចីប្រាក់!');
     	return;
     }	
 	
