@@ -8,7 +8,7 @@ $(document).ready(function(){
 	});
 	
 	$('#btn_addMore').click(function(){
-		loadingSettingData();
+		loadingSettingData('0');
 	});
 	
 	$(document).on('click','.btn_cancel,.btn_close',function(){
@@ -21,14 +21,15 @@ $(document).ready(function(){
 	});
 	
 	$('input[name="rd_decrement"]').change(function(){
-		$('#loading').bPopup();
+		$('#loadingDecrementTypeValue').hide();
 		if($(this).val() == 'decrement'){
-			decrementTypeValue(this);
+			$('#loadingDecrementTypeValue').show();
+			loadingSettingData('1');
 		}else{
-			$('#div_decrement').hide();
-			$('#loadingDecrementTypeValue').hide();
+			
+			loadingSettingData('0');
 		}
-		$('#loading').bPopup().close();
+		
 	});
 	
 	$('.btn_confirm').click(function(){
@@ -82,18 +83,21 @@ function loanerGetMaxId(){
 	});
 }
 /*ប្រភេទបង់ប្រាក់*/
-function loadingSettingData(){
+function loadingSettingData(id){
 	if ($('#loaner_name').val() == '' || $('#phone').val() == '' || $('#id_card').val() == '' || $('#address').val() == ''){
     	alert('សូមបំពេញពត៍មានរបស់អ្នកខ្ចីមុន ទើបអាចបំពេញទឹកប្រាក់ដែលត្រូវខ្ចីបាន!!');
     	return;
     }
-	$('#loadingSettingOtherValue').hide();
-	$('#loadingDecrementTypeValue').hide();
-	$('input:radio[name=rd_decrement]').filter('[value=""]').prop('checked', true);
-	$('#div_decrement').hide();
+	if (id == '0'){
+		$('#loadingSettingOtherValue').hide();
+		$('#loadingDecrementTypeValue').hide();
+		$('input:radio[name=rd_decrement]').filter('[value=""]').prop('checked', true);
+		$('#div_decrement').hide();
+	}
 	$.ajax({
 		type:'GET',
 		url :'/khmoney/loadingSettingData',
+		data:'payTxt='+id,
 		success:function(json){
 			if (json.code == 'undefined'){
 				alert(json.message);
@@ -108,7 +112,7 @@ function loadingSettingData(){
 				opt += '<option value="'+value.type+'" data='+value.day+'>'+value.columns+'</option>';
 			});
 			$("#type_payment").append(opt);			
-			loadingSettingValue($('#type_payment').val());
+			loadingSettingValue($('#type_payment').val(),id);
 			$('.alert_wrap').bPopup();
 		},error:function(json){
 			console.log(json);
@@ -117,10 +121,11 @@ function loadingSettingData(){
 }
 
 /*ប្រភេទបង់ប្រាក់  loading check time*/
-function loadingSettingValue(val){
+function loadingSettingValue(val,payTxt){
 	$.ajax({
 		type:"GET",
-		url:'/khmoney/khmoney/loadingSettingValue',
+		url :'/khmoney/loadingSettingValue',
+		data: 'payTxt='+payTxt,
 		success:function(json){
 			if (json.code == 'undefined'){
 				alert(json.message);
@@ -129,6 +134,7 @@ function loadingSettingValue(val){
 			var label='';
 			$('#div_time').empty();
 			var settingList = json.object.settingList;
+			
 			$.each(settingList,function(index, value){
 				if (val == value.type){
 					label += '<label><input type="radio" name="time" onChange="loadingSettingOtherValue(this)" value="'+value.value+'"> '+value.value+'​ ដង</label>'
@@ -152,85 +158,58 @@ function loadingSettingOtherValue(obj){
 	}	
 }
 
-function loadingDecrementTypeValue(obj){
-	if ($(obj).val() == ''){
-		$('#loadingDecrementTypeValue').show();
-	}else{
-		$('#loadingDecrementTypeValue').hide();
-	}	
-}
-
-
-function decrementTypeValue(obj){
-	$.ajax({
-		type:'GET',
-		url:'/khmoney/decrementTypeValue',
-		success:function(json){
-			if (json.code == 'undefined'){
-				alert(json.message);
-				return;
-			}
-			decrementList = json.object.decrementList;
-			var rdi = '';
-			$('#div_decrement').show();
-			$('#div_decrement').empty();
-			$.each(decrementList,function(index,value){
-				rdi += '<label><input type="radio" name="decrement"  onChange="loadingDecrementTypeValue(this);" value="'+value.value+'"> '+Common.numberWithComma(value.value)+' រៀល</label>&nbsp;&nbsp;&nbsp;&nbsp;';
-			});
-			rdi += '<label><input type="radio" name="decrement" value="" onChange="loadingDecrementTypeValue(this);"> ផ្សេងៗ</label>';
-			$('#div_decrement').append(rdi);
-		},error:function(json){
-			
-		}
-		
-	});
-}
-
 function confrimCheck(){
 	var time,decrement=0,rate,total_money,total_rate,day;
 	if ($('#popup_total_money').val() == '')
 	{
-		alert("សូមបញ្ជូលចំនួនទឹកប្រាក់ដែលត្រូវខ្ចី");
+		alert("សូមបញ្ចូលចំនួនទឹកប្រាក់សរុបដែលត្រូវខ្ចី!");
+		$('#popup_total_money').focus();
 		return;
 	}
+	
+	if ($('input[name=rd_decrement]:checked').val() == 'decrement'){
+		if ($('#popup_decrement').val() == ''){
+			alert("សូមបញ្ចូលចំនួនទឹកប្រាក់ថយពីចំនួនទឹកប្រាក់សន្សំក្នុងពេលបង់មួយលើកៗ");
+			$('#popup_decrement').focus();
+			return;
+		}		
+	}
+	
 	if ($('#type_payment').val() == ''){
-		alert("Please choose type to pay money!");
+		alert("សូមជ្រើសរើសប្រភេទនៃការបង់ប្រាក់!");
 		return;
 	}
 	if (!$('input[name=time]').is(':checked')){
-		alert("Please choose time to pay money!")
+		alert("សូមជ្រើសរើសចំនួនដងដែលត្រូវបង់ប្រាក់!")
 		return;
 	}
 	if ($('input[name=time]').is(':checked')){
 		if ($('input[name=time]:checked').val() == ''){
 			if ($('#popup_time').val() == ''){
-				alert("Please input time to pay.");
+				alert("សូមជ្រើសរើសចំនួនដងដែលត្រូវបង់ប្រាក់!");
 				return;
 			}
 			if ($('#popup_rate').val() == ''){
-				alert("Please input rat to pay.");
+				alert("សូមបញ្ចូលអត្រាការប្រាក់ ដើម្បីទូរទាត់ការប្រាក់!");
 				return;
 			}
-		}
-	}
-	if ($('input[name=rd_decrement]:checked').val() == 'decrement'){
-		if ($('input[name=decrement]').is(':checked')){
-			if ($('input[name=decrement]:checked').val() == ''){
-				if ($('#popup_decrement').val() == ''){
-					alert("Please input money decrement.");
+			if ($('input[name=rd_decrement]:checked').val() == 'decrement'){
+				if (parseInt($('#popup_time').val()) > 15 ){					
+					alert('បើជ្រើសរើសការបង់ប្រាក់ថយចុះ អ្នកមិនអាចបង់ប្រាក់លើស ១៥ ដង ទេ!');
 					return;
 				}	
 			}
-		}	
-		if (!$('input[name=decrement]').is(':checked')){
-			alert("Please choose money decrement.");
+			
 		}
 	}
 	
+	
 	total_money = $('#popup_total_money').val().replace(/[​\u202f\៛\,]/g,'').trim();
+	
 	if ($('input[name=time]:checked').val() == ''){
-		time = $('#popup_time').val().replace(/[​\u202f\៛\,]/g,'');
+		time = $('#popup_time').val().replace(/[​\u202f\ដង\,]/g,'');
 		rate = $('#popup_rate').val().replace(/[​\u202f\%\,]/g,'');
+
 	}else{
 		time = $('input[name=time]:checked').val();
 		rate = $('#rate_'+time).val();
@@ -238,10 +217,8 @@ function confrimCheck(){
 	
 	var dt         = $('#popup_start_date').val().split('/');
 	var start_date = new Date(dt[2],dt[1]-1,dt[0],0,0,0);
-	var end_date   = new Date(dt[2],dt[1]-1,dt[0],0,0,0);
                day = $('#type_payment option:selected').attr('data');
 	start_date.setDate(start_date.getDate()+ parseInt(day));
-	end_date.setDate(end_date.getDate()+ (parseInt(day) * parseInt(time)))
 	
 	/*calculate rate and total money*/
 	var tt = ((parseInt(total_money) / time ) * parseFloat(rate)) / 100;
@@ -250,15 +227,9 @@ function confrimCheck(){
 	var prak_derm  = Math.round(parseInt(total_money) / time);	
 	
 	if ($('input[name=rd_decrement]:checked').val() == 'decrement'){
-		if ($('input[name=decrement]').is(':checked')){
-			if ($('input[name=decrement]:checked').val() == ''){
-				decrement = $('#popup_decrement').val().replace(/[​\u202f\៛\,]/g,'').trim();
-			}else{
-				decrement = $('input[name=decrement]:checked').val();
-			}
-			tt = (parseInt(total_money) * parseFloat(rate)) / 100;
-			total_rate = Common.ConvertZeroTwoDigit(tt+'');
-		}	
+		decrement = $('#popup_decrement').val().replace(/[​\u202f\៛\,]/g,'').trim();
+		tt = (parseInt(total_money) * parseFloat(rate)) / 100;
+		total_rate = Common.ConvertZeroTwoDigit(tt+'');		
 	}
 	
 	$('#first_date_txt').val(moment(start_date).format('DD/MM/YYYY'));	
@@ -271,7 +242,6 @@ function confrimCheck(){
 	$('#decrement_txt').val(Common.numberWithComma(decrement)+ ' ៛')
 	$('#rate_db').val(rate);
 	$('#type_payment_db').val($('#type_payment option:selected').val());
-	$('#end_date_db').val(moment(end_date).format('DD/MM/YYYY'));
 	$("#day_db").val(day);
 	
 	var tbl = '', d = 0;
@@ -301,9 +271,6 @@ function confrimCheck(){
 				+'</tr>';
 		
 		//set end date
-	    if (i==time){
-	    	$('#end_date_db').val(moment(start_date).format('YYYYMMDD'));
-	    }
 	    start_date.setDate(start_date.getDate() + parseInt(day));	 
 	    d = parseInt(d) + parseInt(decrement);
 	   
@@ -312,6 +279,7 @@ function confrimCheck(){
 	$('#tbl_lst1 tbody').append(tbl);
 	$('.alert_wrap').bPopup().close();
 }
+
 
 function loanSaveLoanAgain(){
     if ($('#loaner_name').val() == ''){

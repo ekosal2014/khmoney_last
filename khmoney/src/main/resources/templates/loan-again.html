@@ -241,139 +241,17 @@
    <input type="hidden" th:value="${loaner_id}" id="loaner_id"/>
 	
 </div>
-	<script th:src="@{js/lib/jquery-1.8.3.min.js}"></script>
-	<script th:src="@{js/lib/autoNumeric.min.js}"></script>
-	<script th:src="@{js/lib/jquery.bpopup.min.js}"></script>
-	<script th:src="@{js/lib/jquery-ui.min.js}"></script>
-	<script th:src="@{js/lib/moment.min.js}"></script>
-	<script th:src="@{js/common/Common.js}"></script>
-	<script th:src="@{js/loanagain.js}"></script>
+	<script th:src="@{../js/lib/jquery-1.8.3.min.js}"></script>
+	<script th:src="@{../js/lib/autoNumeric.min.js}"></script>
+	<script th:src="@{../js/lib/jquery.bpopup.min.js}"></script>
+	<script th:src="@{../js/lib/jquery-ui.min.js}"></script>
+	<script th:src="@{../js/lib/moment.min.js}"></script>
+	<script th:src="@{../js/common/Common.js}"></script>
+	<script th:src="@{../js/loanagain.js}"></script>
 	
 	
 <!-- popup form -->
-<div class="alert_wrap frm" style="display:none;">
-	<div class="alert_inner">
-		<div class="alert_tit">
-			<h1>បញ្ចូលពត័មានទឹកប្រាក់</h1>
-			<a href="javascript:" class="btn_close"><span class="blind">close</span></a>
-		</div>
-		<div class="aler_cnt" style="height: auto !important;padding-bottom: 0px !important;">
-			<!-- table input popup -->
-			<div class="tbl_input_pop">
-				<table summary="">
-					<caption></caption>
-					<colgroup>
-					<col style="width:100px;">
-					<col>
-					<col style="width:100px;">
-					<col>
-					</colgroup>
-					<tbody>
-						<tr>
-							<th><div>ទឹកប្រាក់សរុប</div></th>
-							<td colspan="3"><div><input type="text" value="" name="" id="popup_total_money" placeholder=""></div></td>
-						</tr>
-						<tr>
-							<th><div>ប្រភេទបង់ប្រាក់</div></th>
-							<td colspan="3">
-								<div>
-									<select style="width:;" name="type_payment" id="type_payment">
-										<option>បង់ជា ថ្ងៃ</option>
-										<option>បង់ជា ១​ អាទិត្យ</option>
-										<option>បង់ជា ២ អាទិត្យ</option>
-										<option>បង់ជា​ ខែ</option>
-									</select>
-								</div>
-							</td>
-						</tr>
-						<tr>
-							<th><div></div></th>
-							<td colspan="3">
-								<div id="div_time">
-									<!-- <label><input type="radio" name="time" checked="checked"> 05​ ដង</label>&nbsp;&nbsp;&nbsp;&nbsp;
-									<label><input type="radio" name="time"> 10​ ដង</label>&nbsp;&nbsp;&nbsp;&nbsp;
-									<label><input type="radio" name="time"> 15 ដង</label>&nbsp;&nbsp;&nbsp;&nbsp;
-									<label><input type="radio" name="time"> 20 ដង</label>&nbsp;&nbsp;&nbsp;&nbsp;
-									<label><input type="radio" name="time"> 25 ដង</label>&nbsp;&nbsp;&nbsp;&nbsp;
-									<label><input type="radio" name="time"> ផ្សេងៗ</label>-->
-								</div>
-							</td>
-						</tr>
-						<tr style="display:none;" id="loadingSettingOtherValue">
-							<th><div>ចំនួនបង់ប្រាក់</div></th>
-							<td><div><input type="text" value="" name="" placeholder="" id="popup_time"></div></td>
-							<th><div>អត្រាកាប្រាក់</div></th>
-							<td><div><input type="text" value="" name="" placeholder="" id="popup_rate"></div></td>
-						</tr>
-					</tbody>
-				</table>
-			</div>
-			<!-- //table input popup -->
-			<div class="tbl_input_pop mgt10 t_line1" style="padding: 10px 30px;height: auto !important;">
-				<table summary="">
-					<caption></caption>
-					<colgroup>
-					<col style="width:100px;">
-					<col>
-					<col style="width:100px;">
-					<col>
-					</colgroup>
-					<tbody>
-						<tr>
-							<th><div>បរិច្ឆេទទទួលប្រាក់</div></th>
-							<td><div><input type="text" value="" name="" placeholder="" readonly="readonly"​​ id="popup_start_date" style="width: 75%;margin-right:3px;"></div></td>
-						</tr>
-					</tbody>
-				</table>
-			</div>			
-			<!-- table input popup -->
-			<div class="tbl_input_pop mgt10 t_line1" style="height: auto !important;">
-				<table summary="">
-					<caption></caption>
-					<colgroup>
-					<col style="width:100px;">
-					<col>
-					<col style="width:100px;">
-					<col>
-					</colgroup>
-					<tbody>
-						<tr>
-							<th><div>ការបង់ប្រាក់</div></th>
-							<td colspan="3">
-								<div>
-									<label><input type="radio" name="rd_decrement" checked="checked" value=""> បង់ថេរ</label>&nbsp;&nbsp;&nbsp;&nbsp;
-									<label style="display:none;"><input type="radio" name="rd_decrement" value="decrement" > បង់ថយ</label>
-									
-								</div>
-							</td>
-						</tr>
-						<tr>
-							<th><div></div></th>
-							<td colspan="3">
-								<div id="div_decrement">
-									<!-- <label><input type="radio" name="decrement"> 5,000 រៀល</label>&nbsp;&nbsp;&nbsp;&nbsp;
-									<label><input type="radio" name="decrement"> 10,000 រៀល</label>&nbsp;&nbsp;&nbsp;&nbsp;
-									<label><input type="radio" name="decrement"> 15,000 រៀល</label>&nbsp;&nbsp;&nbsp;&nbsp;
-									<label><input type="radio" name="decrement"> 20,000 រៀល</label>&nbsp;&nbsp;&nbsp;&nbsp;
-									<label><input type="radio" name="decrement"> ផ្សេងៗ</label> -->
-								</div>
-							</td>
-						</tr>
-						<tr style="display:none;" id="loadingDecrementTypeValue">
-							<th><div>ចំនួនទឹកប្រាក់ថយ</div></th>
-							<td><div><input type="text" value="" name="" placeholder=""​​ id="popup_decrement"></div></td>
-						</tr>
-					</tbody>
-				</table>
-			</div>
-			<!-- //table input popup -->
-		</div>
-		<div class="t_line">
-			<a href="javascript:" class="btn_confirm">បន្ថែម</a>
-			<a href="javascript:" class="btn_cancel">បោះបង់</a>
-		</div>
-	</div>	
-</div>
+ <div lang="en" th:replace="fragments/popup_loan :: popup_loan"></div>
 <!-- //popup form -->
 <!-- loading.... -->
 <div style="display:none;" id="loading">
