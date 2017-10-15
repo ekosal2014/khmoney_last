@@ -609,6 +609,18 @@ public class LoanerService {
 		}
 	}
 	
+	public Message loanPaymentCountPay(int loan_id) throws KHException {
+		try {
+			HashMap<String, String> result = new HashMap<>();
+			result.put("count", String.valueOf(loanMapper.loanPaymentCountPay(loan_id)));
+			return new Message("0000",result);
+		}catch(Exception e) {
+			throw new KHException("9999", e.getMessage());
+		}
+	}
+	
 }
+
+
 
 

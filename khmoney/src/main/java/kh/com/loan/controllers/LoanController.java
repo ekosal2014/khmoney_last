@@ -136,6 +136,11 @@ public class LoanController {
 		return loanerService.loanPaymentSaveUpdate(params);
 	}
 	
+	@RequestMapping(value = "/loadingCheckLoanPayMent", method = RequestMethod.GET)
+	public @ResponseBody Message loanPaymentCountPay(@RequestParam int loan_id) throws KHException {
+		return loanerService.loanPaymentCountPay(loan_id);
+	}
+	
 }
 
 

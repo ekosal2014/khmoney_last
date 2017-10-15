@@ -111,6 +111,8 @@ function loadingInformationLoaner(json){
 				var bg = '';
 				if (value.txt == '9'){
 					bg = 'payment_already';
+				}else if(value.txt == '2'){
+					bg = 'payment_all';
 				}
 			   tbl += '<tr>'
 					+'<td class="'+bg+'"><div class="t_center">'+(index+1)+'</div></td>'

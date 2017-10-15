@@ -108,7 +108,7 @@ function pagConstand(page){
 								+'<td><div class="t_right">'+amount+' ៛</div></td>'
 								+'<td><div>'+end_date+'</div></td>'
 								+'<td><div class="t_center">'+(value.txt=='9'?'បានបញ្ចប់':'រង់ចាំ')+'</div></td>'
-								+'<td><div><a href="/khmoney/loan/loan-view-detail?loaner_id='+value.loaner_id+'&loan_id='+value.loan_id+'&id=loan" style="width:50px;">លំអិត</a><a href="/khmoney/loan/loan-edit?loaner_id='+value.loaner_id+'&loan_id='+value.loan_id+'" style="width:50px;">កែប្រែ</a></div></td>'
+								+'<td><div><a href="/khmoney/loan/loan-view-detail?loaner_id='+value.loaner_id+'&loan_id='+value.loan_id+'&id=loan" style="width:50px;">លំអិត</a><a loan_id="'+value.loan_id+'" loaner_id="'+value.loaner_id+'" href="javascript:" onClick="loadingEditLoan(this)" txt="'+value.txt+'" style="width:50px;">កែប្រែ</a></div></td>'
 							+'</tr>';
 					i++;
 				});
@@ -201,7 +201,7 @@ function pagDown(page){
 								+'<td><div class="t_right">'+amount+' ៛</div></td>'
 								+'<td><div>'+end_date+'</div></td>'
 								+'<td><div class="t_center">'+(value.txt=='9'?'បានបញ្ចប់':'រង់ចាំ')+'</div></td>'
-								+'<td><div><a href="/khmoney/loan/loan-view-detail?loaner_id='+value.loaner_id+'&loan_id='+value.loan_id+'&id=loan" style="width:50px;">លំអិត</a><a href="/khmoney/loan/loan-edit?loaner_id='+value.loaner_id+'&loan_id='+value.loan_id+'" style="width:50px;">កែប្រែ</a></div></td>'
+								+'<td><div><a href="/khmoney/loan/loan-view-detail?loaner_id='+value.loaner_id+'&loan_id='+value.loan_id+'&id=loan" style="width:50px;">លំអិត</a><a loan_id="'+value.loan_id+'" loaner_id="'+value.loaner_id+'" href="javascript:" onClick="loadingEditLoan(this)" txt="'+value.txt+'" style="width:50px;">កែប្រែ</a></div></td>'
 							+'</tr>';
 					i++;
 				});
@@ -226,4 +226,30 @@ function pagDown(page){
 			
 		}
 	});
+}
+
+
+function loadingEditLoan(obj){
+	if ($(obj).attr('txt') == '9'){
+		alert("អ្នកមិនអាចធ្វើការកែប្រែបានទេ ពីព្រោះអ្នកខ្ចីបានបង់ប្រាក់អស់ហើយ!");
+		return;
+	}
+	$.ajax({
+		type:'GET',
+		url :'/khmoney/loadingCheckLoanPayMent',
+		data:'loan_id='+$(obj).attr('loan_id'),
+		success:function(json){
+			var count = json.object.count;
+			if (parseInt(count) <= 0 ){
+				window.location.href = '/khmoney/loan/loan-edit?loaner_id='+$(obj).attr('loaner_id')+'&loan_id='+$(obj).attr('loan_id');
+			}else{
+				alert("អ្នកមិនអាចធ្វើការកែប្រែបានទេ ពីព្រោះអ្នកខ្ចីបានបង់ប្រាក់ខ្លះហើយ!");
+				return;
+			}
+		},error:function(){
+			
+		}
+		
+	});
+	
 }

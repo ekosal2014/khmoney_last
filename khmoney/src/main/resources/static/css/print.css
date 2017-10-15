@@ -18,7 +18,7 @@
 /* container */
 .container{clear:both;/*padding:0 0 0 210px;*/}
 .content{/*float:left;*/display:block;width:100%;margin:0;padding:0;}
-.cnt_wrap{display:block;margin:0;padding:0 25px 25px;}
+.cnt_wrap{display:block;margin:0;padding:0;}
 
 /* lnb_box */
 .lnb_box{float:left;width:210px;min-height:700px;/*background:#3c434e;*/overflow:hidden;margin:0 0 0 -210px;}
@@ -378,7 +378,7 @@ input{outline:0;}
 .tasks_wrap .main_menu ul li a > span{display:inline-block;line-height:25px;vertical-align:middle;}
 .tasks_wrap .main_menu ul li:hover a > span{color:#fff;}
 
-.tbl_input_dot{display:block;padding:0 30px;}
+.tbl_input_dot{display:block;padding:0 5px;}
 .tbl_input_dot tr th, .tbl_input_dot tr td{text-align:left;vertical-align:middle;} 
 .tbl_input_dot tr th{text-align:right;}
 .tbl_input_dot tr th div, .tbl_input_dot tr td div{padding:3px 7px;font-size:12px;font-family:"Khmer OS Battambang","Khmer OS Bokor", "Khmer OS Content", "Khmer OS Siemreap", "Khmer OS System";color:#222;font-weight:normal;}

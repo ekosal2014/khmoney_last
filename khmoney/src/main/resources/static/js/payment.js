@@ -116,12 +116,18 @@ function loanerGetMaxId(json){
 				var b  = Common.ConvertZeroTwoDigit(a+'');
 				var c  = Common.numberWithComma(b) + ' ៛'
 				var bg = '',readOnly='',dt='',user='',payment_id='',txt='',note='';
-				if (value.txt == '9' || value.txt == '2'){
+				if (value.txt == '9'){
 					bg      = 'payment_already';
 					readOnly='disabled="disabled" checked="checked"';
 					dt      = moment(value.modify_date).format('DD/MM/YYYY');
 					user    = value.pay_date;
 					note      = value.note;
+				}else if(value.txt == '2'){
+					bg = 'payment_all';
+					readOnly='disabled="disabled" checked="checked"';
+					dt      = moment(value.modify_date).format('DD/MM/YYYY');
+					user    = value.pay_date;
+					note    = value.note;
 				}else{
 					payment_id=value.payment_id;
 					txt       ='txt';
@@ -246,7 +252,7 @@ function loanPaymentSaveUpdate(){
 				return;
 			}
 			 alert(json.message);
-			// window.location.href = '/khmoney/missing-payment/payment?loaner_id='+$('#loaner_id').val()+'&loan_id='+$('#loan_id').val();
+			window.location.href = '/khmoney/missing-payment/payment?loaner_id='+$('#loaner_id').val()+'&loan_id='+$('#loan_id').val();
 		},error : function(XHR, textStatus, errorThrown) {
 	        
 		     console.log("Error: " + textStatus);      

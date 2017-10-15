@@ -342,6 +342,12 @@
 		FROM tblloan_payment 
 		WHERE txt = '1' AND loan_id = CAST(#{loan_id} AS int) 	
 	</select>
+	<select id="loanPaymentCountPay" resultType="java.lang.Integer" parameterType="java.lang.Integer">
+		SELECT 
+			COUNT(*) as countTT 
+		FROM tblloan_payment 
+		WHERE txt = '9' AND loan_id = CAST(#{loan_id} AS int) 	
+	</select>
 	<update id="loanPaymentSaveUpdateAll" parameterType="java.util.HashMap">
 		UPDATE tblloan_payment
 		   SET  txt         = #{txt}
