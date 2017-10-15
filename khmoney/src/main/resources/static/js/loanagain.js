@@ -304,7 +304,6 @@ function loanSaveLoanAgain(){
 	var data = {
 			'loaner_id'   :$('#loaner_id').val(),
 			'start_date'  :Common.formatDateToString($('#start_date_txt').val().trim()),
-			'end_date'    :$('#end_date_db').val().trim(),
 			'total_money' :$('#total_money_txt').val().replace(/[​\u202f\៛\,]/g,'').trim(),
 			'rate'        :$('#rate_db').val(),
 			'type_payment':$('#type_payment_db').val(),
@@ -315,7 +314,7 @@ function loanSaveLoanAgain(){
 	console.log(data);
 	$.ajax({
 		type:'GET',
-		url :'/loanSaveLoanAgain',
+		url :'/khmoney/loanSaveLoanAgain',
 		data:data,
 		success:function(json){
 			if (json.code == 'undefined'){
@@ -323,7 +322,7 @@ function loanSaveLoanAgain(){
 				return;
 			}
 			 alert(json.message);
-			 window.location.href = '/loan';
+			 window.location.href = '/khmoney/loan';
 		},error:function(json){
 			console.log(json)
 		}

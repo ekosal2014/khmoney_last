@@ -86,7 +86,7 @@ function pagConstand(page){
 					var  tt     = Math.round(rate);
 					    total   = Math.round(total);
 				    var end_date  = '';
-				    if (value.txt = '1'){
+				    if (value.txt == '1'){
 				    	end_date  = '';
 				    }else{
 				    	end_date = moment(value.end_date).format('DD/MM/YYYY');
@@ -179,7 +179,7 @@ function pagDown(page){
 				$.each(loanList,function(index,value){
 					var rate      = (parseInt(value.total_money) * parseFloat(value.rate)) / 100;					
 				    var end_date  = '';
-				    if (value.txt = '1'){
+				    if (value.txt == '1'){
 				    	end_date  = '';
 				    }else{
 				    	end_date = moment(value.end_date).format('DD/MM/YYYY');

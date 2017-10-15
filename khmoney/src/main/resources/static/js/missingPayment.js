@@ -33,7 +33,7 @@ function init (){
 					tbl += '<tr>'
 								+'<td><div class="t_center"><input type="checkbox"></div></td>'
 								+'<td><div class="t_center">'+(index+1)+'</div></td>'
-								+'<td><div class="t_center">'+Common.numberWithComma(Common.leftPage(value.loaner_id,9),"-")+'</div></td>'
+								+'<td><div class="t_center">'+Common.numberWithComma(Common.leftPage(value.loan_id,9),"-")+'</div></td>'
 								+'<td><div>'+value.loaner_name+'</div></td>'
 								+'<td><div class="t_right">'+Common.numberWithComma(Common.ConvertZeroTwoDigit(Math.round(value.total_money)+''))+' ៛</div></td>'
 								+'<td><div class="t_center">'+moment(value.payment_date).format('DD/MM/YYYY')+'</div></td>'

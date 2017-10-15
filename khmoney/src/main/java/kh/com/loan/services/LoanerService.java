@@ -100,7 +100,7 @@ public class LoanerService {
 		}
 	}
 	
-	@Transactional(propagation = Propagation.REQUIRED)
+	@Transactional(value="transactionManager")
 	public Message loanSaveNewItem(Map map) throws KHException {
 		/*Loaner information */
 		Validation.isBlank((String)map.get("loaner_name"), "សូមធ្វើការបញ្ជូលលេខឈ្មោះរបស់អ្នកខ្ចី");
@@ -152,9 +152,7 @@ public class LoanerService {
 			
 			
 			
-			if (loanerMapper.insertLoanerItem(loaner) < 0){
-				throw new KHException("9999", "ការបញ្ជូលទិន្នន័យរបស់លោកអ្នកទទួលបរាជ័យ");
-			}
+			loanerMapper.insertLoanerItem(loaner);
 
 			
 			loan.setLoaner_id(loaner.getLoaner_id());
@@ -174,13 +172,11 @@ public class LoanerService {
 			loan.setAction("inser Loan");
 					
 			
-			if (loanMapper.insertLoanItem(loan) < 0){
-				throw new KHException("9999", "ការបញ្ជូលទិន្នន័យរបស់លោកអ្នកទទួលបរាជ័យ");
-			}
+			loanMapper.insertLoanItem(loan);
 			
 			Date dt = formatter.parse((String)map.get("start_date"));
 			
-			
+			int d = 0;
 			for(int i=1; i<= Integer.valueOf((String)map.get("time")) ; i++) {
 				LoanPayment loanPayment = new LoanPayment();
 				dt = DateUtils.addDays(dt, day);
@@ -189,7 +185,7 @@ public class LoanerService {
 				if (decrement == 0) {
 					total_rate = (Double) ((prak_derm * rate) / 100); 
 				}else {
-					total_rate = (Double) ((total_money * rate) / 100); 
+					total_rate = (Double) ((total_money * rate) / 100) - d; 
 				}
 
 				Double total_left = total_money - (prak_derm * i) ;
@@ -204,7 +200,9 @@ public class LoanerService {
 				loanPayment.setModify_by(user.getUser_id());
 				loanPayment.setModify_date(Common.getCurrentDate());
 				loanPayment.setAction("Insert Loaner payment");
-				loanMapper.insertLoanPayment(loanPayment);
+				loanMapper.insertLoanPayment(loanPayment) ;
+				
+				d += decrement;
 			}
 
 			return new Message("0000","ការបញ្ជូលទិន្នន័យរបស់លោកអ្នកទទួលជោគជ័យ");
@@ -256,8 +254,8 @@ public class LoanerService {
 		}
 	}
 	
-	@Transactional(propagation = Propagation.REQUIRED)
-	public Message loanSaveLoanAgain(Map params) throws KHException {
+	@Transactional(value="transactionManager")
+	public Message loanSaveLoanAgain(HashMap<String, String> params) throws KHException {
 
 		/*loan information*/
 		Validation.isNumber((String)params.get("total_money"), "សូមធ្វើការបញ្ជូលចំនួនទឹកលុយដែលត្រូវខ្ចី");
@@ -293,9 +291,7 @@ public class LoanerService {
 			System.out.println(loaner.toString());
 			loaner.setTxt("1");
 			loaner.setAction("Update Loaner Information (txt)");
-			if (loanerMapper.loanerUpdateById(loaner) < 0) {
-				throw new KHException("9999", "ការបញ្ជូលទិន្នន័យរបស់លោកអ្នកទទួលបរាជ័យ");
-			}
+			loanerMapper.loanerUpdateById(loaner);
 			
 			loan.setLoaner_id(loaner_id);
 			loan.setTotal_money(total_money);
@@ -318,7 +314,7 @@ public class LoanerService {
 			
 			Date dt = formatter.parse((String)params.get("start_date"));
 			
-			
+			int d = 0;
 			for(int i=1; i<= Integer.valueOf((String)params.get("time")) ; i++) {
 				LoanPayment loanPayment = new LoanPayment();
 				dt = DateUtils.addDays(dt, day);
@@ -327,7 +323,7 @@ public class LoanerService {
 				if (decrement == 0) {
 					total_rate = (Double) ((prak_derm * rate) / 100); 
 				}else {
-					total_rate = (Double) ((total_money * rate) / 100); 
+					total_rate = (Double) ((total_money * rate) / 100) - d; 
 				}
 
 				Double total_left = total_money - (prak_derm * i) ;
@@ -343,6 +339,8 @@ public class LoanerService {
 				loanPayment.setModify_date(Common.getCurrentDate());
 				loanPayment.setAction("Insert Loaner payment");
 				loanMapper.insertLoanPayment(loanPayment);
+				
+				d += decrement;
 			}
 
 			return new Message("0000","ការបញ្ជូលទិន្នន័យរបស់លោកអ្នកទទួលជោគជ័យ");
@@ -424,7 +422,7 @@ public class LoanerService {
 		}
 	}
 	
-	@Transactional(propagation = Propagation.REQUIRED)
+	@Transactional(value="transactionManager")
 	public Message loanSaveUdateItem(HashMap<String, String> params) throws KHException {
 		HashMap<String, String> param = new HashMap<>();
 		/*Loaner information */
@@ -460,10 +458,8 @@ public class LoanerService {
 			int loaner_id = Integer.valueOf((String)params.get("loaner_id"));
 			param.put("loaner_id", String.valueOf(loaner_id));
 			loaner = (Loaner)loanerMapper.loadingLoanerInformationById(param);
+		
 			
-			if (loaner == null) {
-				throw new KHException("9999", "ការកែប្រែរបស់លោកអ្នកទទួលបរាជ័យ");
-			}
 			loaner.setLoaner_name((String)params.get("loaner_name"));
 			loaner.setGender((String)params.get("gender"));
 			loaner.setPhone((String)params.get("phone"));
@@ -472,16 +468,10 @@ public class LoanerService {
 			loaner.setModify_by(user.getUser_id());
 			loaner.setModify_date(Common.getCurrentDate());
 			loaner.setAction("Update Loaner Information (txt)");
-			if (loanerMapper.loanerUpdateById(loaner) < 0) {
-				throw new KHException("9999", "ការកែប្រែរបស់លោកអ្នកទទួលបរាជ័យ");
-			}
+			loanerMapper.loanerUpdateById(loaner);
 			
 			int loan_id = Integer.valueOf(params.get("loan_id"));
-			System.out.println("  sakjjdflksafd "+loan_id);
 			loan        = loanMapper.loadingLoanViewCheck(loan_id);
-			if (loan == null) {
-				throw new KHException("9999", "ការកែប្រែរបស់លោកអ្នកទទួលបរាជ័យ");
-			}
 			
 			loan.setLoaner_id(loaner.getLoaner_id());
 			loan.setTotal_money(total_money);
@@ -496,17 +486,14 @@ public class LoanerService {
 			loan.setModify_date(Common.getCurrentDate());
 			loan.setAction("update Loan");
 			
-			if (loanMapper.updateLoanById(loan) < 0) {
-				throw new KHException("9999", "ការកែប្រែរបស់លោកអ្នកទទួលបរាជ័យ");
-			}
+			loanMapper.updateLoanById(loan);
 			
             Date dt = formatter.parse((String)params.get("start_date"));
 			
             
-            if (loanMapper.deleteLoanPaymentByLoanId(loan_id) < 0) {
-            	throw new KHException("9999", "ការកែប្រែរបស់លោកអ្នកទទួលបរាជ័យ");
-            }
-			
+           loanMapper.deleteLoanPaymentByLoanId(loan_id);
+           
+			int d = 0;
 			for(int i=1; i<= Integer.valueOf((String)params.get("time")) ; i++) {
 				LoanPayment loanPayment = new LoanPayment();
 				dt = DateUtils.addDays(dt, day);
@@ -515,12 +502,11 @@ public class LoanerService {
 				if (decrement == 0) {
 					total_rate = (Double) ((prak_derm * rate) / 100); 
 				}else {
-					total_rate = (Double) ((total_money * rate) / 100); 
+					total_rate = (Double) ((total_money * rate) / 100) -  d; 
 				}
 
 				Double total_left = total_money - (prak_derm * i) ;
-				
-				
+								
 				loanPayment.setLoan_id(loan.getLoan_id());
 				loanPayment.setPayment_date(formatter.format(dt).toString());
 				loanPayment.setPrak_derm(prak_derm);
@@ -531,6 +517,8 @@ public class LoanerService {
 				loanPayment.setModify_date(Common.getCurrentDate());
 				loanPayment.setAction("Insert Loaner payment");
 				loanMapper.insertLoanPayment(loanPayment);
+				
+				d += decrement;
 			}
 			
 			return new Message("0000", "ការកែប្រែរបស់លោកអ្នកទទួលបានជោគជ័យ");
@@ -547,10 +535,12 @@ public class LoanerService {
 		}
 	}
 	
-	@Transactional(propagation = Propagation.REQUIRED)
-	public Message loanPaymentSaveUpdate(HashMap<String,String> params) throws KHException {
+	@Transactional(value="transactionManager")
+	public Message loanPaymentSaveUpdate(HashMap<String,Object> params) throws KHException {
 		try {
 			User user = new User();
+			Loaner loaner = new Loaner();
+			Loan   loan   = new Loan();
 			Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 			if (!auth.getPrincipal().equals("anonymousUser")) {
 				user = (User) auth.getPrincipal();
@@ -558,18 +548,61 @@ public class LoanerService {
 			}else {
 				throw new KHException("9999", "ការកែប្រែរបស់លោកអ្នកទទួលបរាជ័យ");
 			}
-			for (int i=0;i<params.size();i++) {
+
+			List<HashMap<String, String>> payMent = (List)params.get("loanPayment");
+			
+			for (int i=0;i<payMent.size();i++) {
 				HashMap<String, String> param = new HashMap<>();
-				param.put("payment_id", (String)params.get("list["+i+"][payment_id]"));
+				param = payMent.get(i);
+				param.put("payment_id", (String)param.get("payment_id"));
 				param.put("modify_by", String.valueOf(user.getUser_id()));
 				param.put("modify_date", Common.getCurrentDate());
-				param.put("note", (String)params.get("list["+i+"][note]"));
+				param.put("note", (String)param.get("note"));
 				param.put("txt", "9");
 				param.put("action", "update Information");
-				if (loanMapper.loanPaymentSaveUpdate(param)<0) {
-					throw new KHException("9999", "ការកែប្រែរបស់លោកអ្នកទទួលបរាជ័យ");
-				}
+				loanMapper.loanPaymentSaveUpdate(param);
 			}
+			
+			
+			
+			String payMentAll = (String)params.get("paymentAll");
+			System.out.println( " Pay All "+ payMentAll);
+			if (payMentAll.equals("true")) {
+				HashMap<String, String> param = new HashMap<>();
+				param.put("loaner_id", (String)params.get("loaner_id"));
+				param.put("loan_id", (String)params.get("loan_id"));
+				param.put("modify_by", String.valueOf(user.getUser_id()));
+				param.put("modify_date", Common.getCurrentDate());
+				param.put("note", "");
+				param.put("txt", "2");
+				param.put("action", "update Information");
+				loanMapper.loanPaymentSaveUpdateAll(param);
+			}
+			
+			HashMap<String, String> param = new HashMap<>();
+			param.put("loaner_id", (String)params.get("loaner_id"));
+			param.put("loan_id", (String)params.get("loan_id"));
+			if (loanMapper.loanPaymentCountNotPay(param) <= 0) {
+				
+				loaner = (Loaner)loanerMapper.loadingLoanerInformationById(param);			
+
+				loaner.setTxt("9");
+				loaner.setModify_by(user.getUser_id());
+				loaner.setModify_date(Common.getCurrentDate());
+				loaner.setAction("update Loan");
+				System.out.println( " loaner  id"+ loaner.getLoaner_id());
+				loanerMapper.loanerUpdateById(loaner);
+				
+				loan   = (Loan)loanMapper.loadingLoanViewCheck(Integer.valueOf(param.get("loan_id")));
+
+				loan.setTxt("9");
+				loan.setModify_by(user.getUser_id());
+				loan.setModify_date(Common.getCurrentDate());
+				loan.setAction("update Loan");
+				System.out.println( " loan  id"+ loan.getLoan_id());
+				loanMapper.updateLoanById(loan);
+			}
+
 			return new Message("0000","ការកែប្រែរបស់លោកអ្នកទទួលបានជោគជ័យ");
 		}catch(Exception e) {
 			throw new KHException("9999", e.getMessage());

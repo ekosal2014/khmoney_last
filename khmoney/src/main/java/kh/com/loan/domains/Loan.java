@@ -140,5 +140,11 @@ public class Loan {
 	public void setAction(String action) {
 		this.action = action;
 	}
+	public int getCount_day() {
+		return count_day;
+	}
+	public void setCount_day(int count_day) {
+		this.count_day = count_day;
+	}
 	
 }

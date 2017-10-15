@@ -27,5 +27,7 @@ public interface LoanMapper {
 	public Loan loadingLoanViewCheck(@Param("loan_id") int loan_id);
 	public List<HashMap<String,String>> missingPaymentList(HashMap<String,String> params);
 	public int loanPaymentSaveUpdate(HashMap<String, String> param);
+	public int loanPaymentCountNotPay(HashMap<String, String> param);
+	public int loanPaymentSaveUpdateAll(HashMap<String, String> param);
 	
 }

@@ -1,22 +1,19 @@
 package kh.com.loan.controllers;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import kh.com.loan.domains.Message;
-import kh.com.loan.mappers.LoanerMapper;
 import kh.com.loan.services.LoanerService;
 import kh.com.loan.utils.KHException;
 
@@ -98,8 +95,8 @@ public class LoanController {
 	}
 
 	@RequestMapping(value = "/loanSaveLoanAgain", method = RequestMethod.GET)
-	public @ResponseBody Message loanSaveLoanAgain(@RequestParam Map params) throws KHException {
-		//System.out.println(" Map === "+ params);
+	public @ResponseBody Message loanSaveLoanAgain(@RequestParam HashMap<String, String> params) throws KHException {
+		System.out.println(" Map === "+ params);
 		return loanerService.loanSaveLoanAgain(params);
 	}
 	
@@ -134,9 +131,11 @@ public class LoanController {
 		return loanerService.missingPaymentList(params);
 	}
 	
-	@RequestMapping(value = "/loanPaymentSaveUpdate", method = RequestMethod.GET)
-	public @ResponseBody Message loanPaymentSaveUpdate(@RequestParam HashMap<String,String> params) throws KHException {
+	@RequestMapping(value = "/loanPaymentSaveUpdate", method = RequestMethod.POST)
+	public @ResponseBody Message loanPaymentSaveUpdate(@RequestBody HashMap<String, Object> params) throws KHException {
 		return loanerService.loanPaymentSaveUpdate(params);
 	}
 	
 }
+
+

@@ -116,7 +116,7 @@ function loanerGetMaxId(json){
 				var b  = Common.ConvertZeroTwoDigit(a+'');
 				var c  = Common.numberWithComma(b) + ' ៛'
 				var bg = '',readOnly='',dt='',user='',payment_id='',txt='',note='';
-				if (value.txt == '9'){
+				if (value.txt == '9' || value.txt == '2'){
 					bg      = 'payment_already';
 					readOnly='disabled="disabled" checked="checked"';
 					dt      = moment(value.modify_date).format('DD/MM/YYYY');
@@ -210,34 +210,49 @@ function change(obj){
 
 function loanPaymentSaveUpdate(){
 	$('#loading').bPopup();
-	var data = {},obj = [];
+	 var obj = [];
 	$('#tbl_payment tr.txt').each(function(index,value){
 		if ($(this).find('input[type=checkbox]').prop('checked') == true){
-			data ={
+			var data ={
 					'payment_id':$(this).find('.payment_id').val(),
 					'note'      :$(this).find('.note').val()
 			}
 			obj.push(data);
 		}
 	});
-	var dt = {
-			'list':obj
+	var data = {}
+	data['loanPayment']=obj;
+	data['loan_id']=$('#loan_id').val();
+	data['loaner_id']=$('#loaner_id').val();
+	data['paymentAll'] = 'false';
+	if ($('#payment_all').is(':checked')){
+		data['paymentAll'] = 'true';
 	}
-	console.log(dt);
+	var token = $('#_csrf').attr('content');
+	var header = $('#_csrf_header').attr('content');
 	$.ajax({
-		type:'GET',
-		url :'/khmoney/loanPaymentSaveUpdate',
-		data:dt,
+		type:'POST',
+		contentType : 'application/json; charset=utf-8',
+        dataType : 'json',
+		url :'/khmoney/loanPaymentSaveUpdate', 
+		data: JSON.stringify(data),
+		beforeSend: function(xhr) {
+            xhr.setRequestHeader(header, token)
+         },
 		success:function(json){
-			if (json.code == 'undefined'){
+			console.log(json);
+			if (json.code == 'undefined' && json.code == '9999'){
 				alert(json.message);
 				return;
 			}
 			 alert(json.message);
-			 window.location.href = '/khmoney/missing-payment/payment?loaner_id='+$('#loaner_id').val()+'&loan_id='+$('#loan_id').val();
-		},error:function(json){
-			console.log(json);
-		}
+			// window.location.href = '/khmoney/missing-payment/payment?loaner_id='+$('#loaner_id').val()+'&loan_id='+$('#loan_id').val();
+		},error : function(XHR, textStatus, errorThrown) {
+	        
+		     console.log("Error: " + textStatus);      
+		     console.log("Error: " + errorThrown);
+		 
+		 }
 	});
 	$('#loading').bPopup().close();
 }
