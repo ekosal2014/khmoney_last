@@ -206,7 +206,7 @@ function change(obj){
 	$(tr).find('tr.txt').each(function(index,value){
 		if ($(value).find('input[type=checkbox]').prop('checked') == false){
 			if(parseInt(i) > parseInt($(value).find('.index').text())){
-				alert('can not')
+				alert('អ្នកមិនអាចធ្វើការបង់ប្រាក់ ដោយរំលងបានទេ!')
 				$('#tbl_payment tbody tr.txt').find('input[type=checkbox]').prop('checked',false);
 				return false;
 			}

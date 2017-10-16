@@ -228,3 +228,4 @@ Common.ConvertDayToKhmer = function(str){
 	}
 	return ch;
 }
+
